@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 148" role="img" aria-label="Tech 'n Thesis">
+  <defs>
+    <linearGradient id="acc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22d3ee"/>
+      <stop offset="1" stop-color="#14b8a6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Shared large Tau (τ) = the "T" for both Tech and Thesis, accent gradient -->
+  <text x="6" y="120" font-family="Georgia, 'Times New Roman', serif" font-size="152"
+        fill="url(#acc)">&#964;</text>
+
+  <!-- THESIS (upper word): Θ (theta) then esis -->
+  <text x="112" y="68" font-family="Georgia, 'Times New Roman', serif" font-size="56"
+        fill="url(#acc)">&#920;</text>
+  <text x="150" y="65" font-family="'Courier New', Consolas, monospace" font-weight="700"
+        font-size="42" fill="#0f172a">esis</text>
+
+  <!-- TECH (lower word): ech after the shared tau -->
+  <text x="112" y="126" font-family="'Courier New', Consolas, monospace" font-weight="700"
+        font-size="42" fill="#0f172a">ech</text>
+</svg>
