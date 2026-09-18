@@ -1,6 +1,6 @@
 /* ==========================================================================
    Tech 'n Thesis — Site Configuration
-   👉 EDIT THIS FILE to change your WhatsApp link, email & contact form.
+   EDIT THIS FILE to change your WhatsApp link, email & contact form.
    ========================================================================== */
 
    window.SITE_CONFIG = {
@@ -10,7 +10,10 @@
     whatsappLink: "https://wa.me/message/7SJ5BP7MEURVI1",
   
     // Your contact email.
-    email: "hello@technthesis.com",
+    email: "contact@technthesis.name.ng",
+
+    
+    facebookLink: "https://www.https://www.facebook.com/profile.php?id=61593274087810",
   
     // OPTIONAL: your Formspree endpoint, so the contact form on contact.html
     // actually delivers messages to your inbox.
@@ -45,4 +48,11 @@
       if (el.tagName === "A") el.setAttribute("href", "mailto:" + cfg.email);
       el.textContent = cfg.email;
     });
-  })();  
+  })();
+  
+    // Facebook links — every element with class "js-facebook"
+    if (cfg.facebookLink) {
+      document.querySelectorAll(".js-facebook").forEach(function (el) {
+        el.setAttribute("href", cfg.facebookLink);
+      });
+    }
