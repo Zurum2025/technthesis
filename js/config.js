@@ -1,6 +1,6 @@
 /* ==========================================================================
    Tech 'n Thesis — Site Configuration
-   EDIT THIS FILE to change your WhatsApp link, email & contact form.
+   EDIT THIS FILE to change your WhatsApp link, email, socials & contact form.
    ========================================================================== */
 
    window.SITE_CONFIG = {
@@ -12,8 +12,9 @@
     // Your contact email.
     email: "contact@technthesis.name.ng",
 
-    
-    facebookLink: "https://www.https://www.facebook.com/profile.php?id=61593274087810",
+    facebookLink: "https://www.facebook.com/profile.php?id=61593274087810",
+    linkedinLink: "https://www.linkedin.com/company/technthesis",
+    githubLink: "https://github.com/TechnThesis",
   
     // OPTIONAL: your Formspree endpoint, so the contact form on contact.html
     // actually delivers messages to your inbox.
@@ -27,7 +28,7 @@
     formEndpoint: "" // e.g. "https://formspree.io/f/xxxxxxxx"
   };
   
-  /* ---- Applies the config to every WhatsApp link & email on the page ---- */
+  /* ---- Applies the config to every WhatsApp, email & social link on the page ---- */
   (function () {
     var cfg = window.SITE_CONFIG;
     var waURL = cfg.whatsappLink;
@@ -48,11 +49,21 @@
       if (el.tagName === "A") el.setAttribute("href", "mailto:" + cfg.email);
       el.textContent = cfg.email;
     });
-  })();
   
-    // Facebook links — every element with class "js-facebook"
-    if (cfg.facebookLink) {
-      document.querySelectorAll(".js-facebook").forEach(function (el) {
-        el.setAttribute("href", cfg.facebookLink);
+    // Social links — every element with the matching class gets its href set.
+    // (Kept inside this same function so `cfg` is still in scope — this used
+    // to live in its own block after the IIFE closed, which referenced `cfg`
+    // after it had gone out of scope and silently failed.)
+    var socialSelectors = {
+      ".js-facebook": cfg.facebookLink,
+      ".js-linkedin": cfg.linkedinLink,
+      ".js-github": cfg.githubLink
+    };
+    Object.keys(socialSelectors).forEach(function (sel) {
+      var url = socialSelectors[sel];
+      if (!url) return;
+      document.querySelectorAll(sel).forEach(function (el) {
+        el.setAttribute("href", url);
       });
-    }
+    });
+  })();
