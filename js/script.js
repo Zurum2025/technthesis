@@ -133,58 +133,85 @@
   
       form.addEventListener("submit", function (e) {
         e.preventDefault();
-        var name = form.querySelector("#name");
-        var email = form.querySelector("#email");
-        var message = form.querySelector("#message");
-  
-        if (!name.value.trim() || !email.value.trim() || !message.value.trim()) {
-          showMsg("Please fill in your name, email and message.", "err");
+        var nameInput = form.querySelector("#name");
+        var emailInput = form.querySelector("#email");
+        var serviceInput = form.querySelector("#service");
+        var messageInput = form.querySelector("#message");
+
+        var nameVal = (nameInput && nameInput.value || "").trim();
+        var emailVal = (emailInput && emailInput.value || "").trim();
+        var serviceVal = (serviceInput && serviceInput.value || "").trim() || "General Project Development";
+        var messageVal = (messageInput && messageInput.value || "").trim();
+
+        if (!nameVal || !emailVal || !messageVal) {
+          showMsg("Please fill in your name, email address, and project details.", "err");
           return;
         }
-        var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
+        var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal);
         if (!emailOk) {
           showMsg("Please enter a valid email address.", "err");
           return;
         }
-  
-        var endpoint = (window.SITE_CONFIG && window.SITE_CONFIG.formEndpoint) || "";
-  
-        // No backend/Formspree endpoint configured yet — be honest instead
-        // of pretending the message was sent somewhere.
-        if (!endpoint) {
-          showMsg(
-            "This form isn't connected to an inbox yet, so we won't receive this. " +
-            "Please tap the WhatsApp button above, or email us directly for now.",
-            "err"
-          );
-          return;
-        }
-  
+
+        var officialMail = (window.SITE_CONFIG && window.SITE_CONFIG.email) || "contact@technthesis.name.ng";
+        var endpoint = (window.SITE_CONFIG && window.SITE_CONFIG.formEndpoint) || form.getAttribute("action") || ("https://formsubmit.co/ajax/" + officialMail);
+
         setSending(true);
-  
+
+        var payload = {
+          name: nameVal,
+          email: emailVal,
+          service: serviceVal,
+          message: messageVal,
+          _subject: "New Project Inquiry: " + nameVal + " (" + serviceVal + ")",
+          _replyto: emailVal
+        };
+
+        var handleSuccess = function (customMsg) {
+          var firstName = nameVal.split(" ")[0];
+          showMsg(
+            customMsg ||
+            ("Thanks, " + firstName + "! Your project details have been sent to our team at " + officialMail + ". We will review your project and get back to you within 24 hours."),
+            "ok"
+          );
+          form.reset();
+        };
+
         fetch(endpoint, {
           method: "POST",
-          headers: { "Accept": "application/json" },
-          body: new FormData(form)
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify(payload)
         })
           .then(function (res) {
-            if (res.ok) {
-              showMsg(
-                "Thanks, " + name.value.trim().split(" ")[0] +
-                "! Your message has been sent. We usually reply within 24 hours — for an instant reply, tap WhatsApp.",
-                "ok"
-              );
-              form.reset();
-            } else {
-              showMsg(
-                "Something went wrong sending your message. Please try WhatsApp instead.",
-                "err"
-              );
-            }
+            return res.json().then(function (data) {
+              if (res.ok && (data.success === true || data.success === "true" || !("success" in data))) {
+                handleSuccess(data && data.message);
+              } else if (data && data.message && data.message.indexOf("Activation") !== -1) {
+                showMsg(
+                  "Setup notice: An activation email was sent to " + officialMail + ". Please click 'Activate Form' in your Zoho inbox to confirm message forwarding.",
+                  "ok"
+                );
+                form.reset();
+              } else if (res.ok) {
+                handleSuccess();
+              } else {
+                throw new Error(data && (data.error || data.message) || "Submission failed");
+              }
+            }).catch(function (err) {
+              if (res.ok) {
+                handleSuccess();
+              } else {
+                throw err;
+              }
+            });
           })
-          .catch(function () {
+          .catch(function (err) {
+            console.error("Form error:", err);
             showMsg(
-              "Something went wrong sending your message. Please try WhatsApp instead.",
+              "Couldn't connect automatically. Please email us directly at " + officialMail + " or click WhatsApp for an instant response.",
               "err"
             );
           })

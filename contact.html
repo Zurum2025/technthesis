@@ -91,7 +91,10 @@
 
       <!-- Form side -->
       <div data-reveal data-delay="1">
-        <form class="form" id="contact-form" novalidate>
+        <form class="form" id="contact-form" action="https://formsubmit.co/contact@technthesis.name.ng" method="POST" novalidate>
+          <input type="hidden" name="_subject" value="New Project Inquiry — Tech 'n Thesis" />
+          <input type="hidden" name="_template" value="table" />
+          <input type="hidden" name="_captcha" value="false" />
           <div class="field">
             <label for="name">Full name</label>
             <input type="text" id="name" name="name" placeholder="e.g. Jane Doe" autocomplete="name" />

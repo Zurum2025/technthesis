@@ -1,0 +1,8 @@
+{
+  "name": "Tech 'n Thesis",
+  "description": "Tech 'n Thesis helps computer science, software engineering and IT students build high-quality research projects, web apps, database systems and data analytics dashboards.",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ],
+  "permissions": []
+}

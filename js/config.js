@@ -16,16 +16,14 @@
     linkedinLink: "https://www.linkedin.com/company/technthesis",
     githubLink: "https://github.com/TechnThesis",
   
-    // OPTIONAL: your Formspree endpoint, so the contact form on contact.html
-    // actually delivers messages to your inbox.
-    //   1. Go to https://formspree.io and create a free account.
-    //   2. Create a new form and copy the endpoint it gives you
-    //      (looks like "https://formspree.io/f/xxxxxxxx").
-    //   3. Paste it below between the quotes.
-    // Until you set this, the contact form will honestly tell visitors it
-    // isn't connected yet and point them to WhatsApp/email instead of
-    // pretending their message was sent.
-    formEndpoint: "" // e.g. "https://formspree.io/f/xxxxxxxx"
+    // Secure Form Backend (ZERO passwords required, 100% safe on GitHub Pages):
+    // Form submissions are forwarded directly to your Zoho inbox (contact@technthesis.name.ng).
+    //
+    // Options:
+    // 1. FormSubmit (Default): "https://formsubmit.co/ajax/contact@technthesis.name.ng"
+    // 2. Formspree: "https://formspree.io/f/<your-form-id>"
+    // 3. Web3Forms: "https://api.web3forms.com/submit"
+    formEndpoint: "https://formsubmit.co/ajax/contact@technthesis.name.ng"
   };
   
   /* ---- Applies the config to every WhatsApp, email & social link on the page ---- */
@@ -66,4 +64,11 @@
         el.setAttribute("href", url);
       });
     });
+
+    // Update contact form action attribute to match config for native fallback
+    var contactForm = document.getElementById("contact-form");
+    if (contactForm && cfg.formEndpoint) {
+      var nativeAction = cfg.formEndpoint.replace("/ajax/", "/");
+      contactForm.setAttribute("action", nativeAction);
+    }
   })();
