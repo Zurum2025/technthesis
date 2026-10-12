@@ -193,4 +193,81 @@
           });
       });
     }
+    
+    /* ---------- Portfolio slideshow (hover-triggered) ---------- */
+    document.addEventListener('DOMContentLoaded', () => {
+      const slideshowWrappers = document.querySelectorAll('.portfolio-slideshow');
+    
+      slideshowWrappers.forEach((container) => {
+        const primaryImg = container.querySelector('img[data-images]');
+        if (!primaryImg) return;
+    
+        const images = primaryImg.getAttribute('data-images').split(',').map(s => s.trim());
+        if (images.length <= 1) return;
+    
+        // Preload all assets in the background
+        images.forEach(src => {
+          const preload = new Image();
+          preload.src = src;
+        });
+    
+        // Style the primary image as the permanent base layer
+        primaryImg.classList.add('slide-layer', 'base');
+    
+        // Create an overlay image layer for silky crossfades
+        const fadeImg = document.createElement('img');
+        fadeImg.className = 'slide-layer fade';
+        fadeImg.alt = primaryImg.alt || 'Project preview';
+        container.appendChild(fadeImg);
+    
+        // Create modern dot indicators
+        const dotsTrack = document.createElement('div');
+        dotsTrack.className = 'slideshow-dots';
+        images.forEach((_, idx) => {
+          const dot = document.createElement('span');
+          dot.className = `slideshow-dot ${idx === 0 ? 'active' : ''}`;
+          dotsTrack.appendChild(dot);
+        });
+        container.appendChild(dotsTrack);
+    
+        let currentIndex = 0;
+        let timer = null;
+        const triggerCard = container.closest('.project') || container;
+    
+        const setDots = (activeIndex) => {
+          dotsTrack.querySelectorAll('.slideshow-dot').forEach((d, i) => {
+            d.classList.toggle('active', i === activeIndex);
+          });
+        };
+    
+        const showSlide = (nextIndex) => {
+          fadeImg.src = images[nextIndex];
+          fadeImg.classList.add('visible');
+          setDots(nextIndex);
+    
+          // Once the crossfade transition finishes, commit to the base layer
+          setTimeout(() => {
+            primaryImg.src = images[nextIndex];
+            fadeImg.classList.remove('visible');
+          }, 650);
+        };
+    
+        triggerCard.addEventListener('mouseenter', () => {
+          // 1800ms gives the user comfortable time to digest each screenshot
+          timer = setInterval(() => {
+            currentIndex = (currentIndex + 1) % images.length;
+            showSlide(currentIndex);
+          }, 1800);
+        });
+    
+        triggerCard.addEventListener('mouseleave', () => {
+          clearInterval(timer);
+          if (currentIndex !== 0) {
+            currentIndex = 0;
+            showSlide(0);
+          }
+        });
+      });
+    });
+
   })();  

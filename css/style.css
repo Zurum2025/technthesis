@@ -575,3 +575,82 @@ p { color: var(--text-soft); }
   * { animation: none !important; scroll-behavior: auto !important; }
   [data-reveal] { opacity: 1 !important; transform: none !important; }
 }
+
+/* --- Modern Interactive Slideshow Container --- */
+.portfolio-slideshow {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: inherit;
+  background-color: var(--navy);
+}
+
+/* Layered images for a cinematic crossfade and micro-zoom */
+.portfolio-slideshow .slide-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1), transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: opacity, transform;
+}
+
+.portfolio-slideshow .slide-layer.base {
+  opacity: 1;
+  z-index: 1;
+}
+
+.portfolio-slideshow .slide-layer.fade {
+  opacity: 0;
+  z-index: 2;
+}
+
+.portfolio-slideshow .slide-layer.fade.visible {
+  opacity: 1;
+}
+
+/* Subtle cinematic zoom while inspecting */
+.project:hover .slide-layer {
+  transform: scale(1.035);
+}
+
+/* Minimalist navigation indicator pills */
+.slideshow-dots {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  padding: 5px 9px;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 999px;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.project:hover .slideshow-dots {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.slideshow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transition: all 0.35s ease;
+}
+
+.slideshow-dot.active {
+  width: 18px;
+  border-radius: 999px;
+  background: var(--accent);
+}
